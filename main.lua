@@ -1,22 +1,20 @@
+require('libs/light_world/')
+require('engine')
+require("functions")
+require("ui/ui")
+
 -- Runs first
 function love.load()
-	g = {} -- namespace for game
-	require("functions")
-
 	-- set globals heres
 	dtotal = 0
 	curgame = nil
+	seconds = 0
+	print("loaded")
 
-	-- UI
-	require("ui/ui")
-
-
-	g = {}
-	g.events = {}
-	function g:trigger(event)
-
-	end
-
+	g:hook("1_second", function()
+		seconds = seconds + 1
+		ui.text = seconds
+	end)
 end
 
 function GetGame()
@@ -25,6 +23,8 @@ end
 
 -- Runs second
 function love.update(elapsed) -- dt = time since last frame update
+	require('libs/lurker').update() -- file hotswapping
+
 	dtotal = dtotal + elapsed
 
 	curgame = GetGame()
@@ -32,10 +32,9 @@ function love.update(elapsed) -- dt = time since last frame update
 		
 	end 
 
-	if (dtotal >= 0.1) then
-		g:trigger("0.1_second")
-	end
+
 	if (dtotal >= 1) then
+		dtotal = 0
 		g:trigger("1_second")
 	end
 
